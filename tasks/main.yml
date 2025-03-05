@@ -34,6 +34,7 @@
   command: "echo -e '{{ samba_password }}\n{{ samba_password }}' | smbpasswd -a pi"
   args:
     creates: "/etc/samba/smbpasswd"
+  no_log: true  # Hide password from Ansible logs
 
 - name: Ensure Samba is running
   systemd:
