@@ -23,3 +23,38 @@
     name: nfs-kernel-server
     state: restarted
     enabled: yes
+
+# Setup samba
+- name: Install Samba
+  apt:
+    name: samba
+    state: present
+
+- name: Add Samba password for pi user
+  command: "smbpasswd -a -n pi"
+  args:
+    creates: "/etc/samba/smbpasswd"
+
+- name: Ensure Samba is running
+  systemd:
+    name: smbd
+    state: started
+    enabled: yes
+
+- name: Configure Samba share for /nfs_share
+  blockinfile:
+    path: /etc/samba/smb.conf
+    block: |
+      [rpi_nfs_share]
+      path = /rpi_nfs_share
+      available = yes
+      valid users = pi
+      read only = no
+      browseable = yes
+      public = yes
+      writable = yes
+      
+- name: Restart Samba to apply changes
+  systemd:
+    name: smbd
+    state: restarted
