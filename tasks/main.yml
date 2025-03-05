@@ -29,7 +29,6 @@
   apt:
     name:
       - samba
-      - libpam-smbpass
     state: present
 
 - name: Ensure Samba is running
@@ -42,6 +41,13 @@
   blockinfile:
     path: /etc/samba/smb.conf
     block: |
+      [global]
+      security = user
+      passdb backend = tdbsam
+
+      # Enable system authentication (default PAM)
+      obey pam restrictions = yes
+
       [rpi_nfs_share]
       path = /rpi_nfs_share
       available = yes
