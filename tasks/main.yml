@@ -43,10 +43,7 @@
     block: |
       [global]
       security = user
-      passdb backend = tdbsam
-
-      # Enable system authentication (default PAM)
-      obey pam restrictions = yes
+      map to guest = bad user
 
       [rpi_nfs_share]
       path = /rpi_nfs_share
