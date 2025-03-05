@@ -31,7 +31,7 @@
     state: present
 
 - name: Add Samba password for pi user
-  command: "smbpasswd -a -n pi"
+  command: "echo -e '{{ samba_password }}\n{{ samba_password }}' | smbpasswd -a pi"
   args:
     creates: "/etc/samba/smbpasswd"
 
