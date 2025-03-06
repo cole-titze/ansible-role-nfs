@@ -50,7 +50,7 @@
       writable = yes
 
 - name: Ensure pi user is added to Samba database
-  command: smbpasswd -a -n {{ ansible_user }}
+  command: "smbpasswd -a -n {{ ansible_user }}"
 
 - name: Restart Samba to apply changes
   systemd:
