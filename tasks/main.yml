@@ -37,18 +37,14 @@
     state: started
     enabled: yes
 
-- name: Configure Samba to use system password
-  lineinfile:
+- name: Ensure [global] section has necessary settings
+  blockinfile:
     path: /etc/samba/smb.conf
-    regexp: '^#?security ='
-    line: 'security = user'
-    create: yes
-
-- name: Configure Samba passdb backend
-  lineinfile:
-    path: /etc/samba/smb.conf
-    regexp: '^#?passdb backend ='
-    line: 'passdb backend = tdbsam'
+    marker: "# {mark} ANSIBLE MANAGED BLOCK - GLOBAL"
+    insertafter: "\[global\]"
+    block: |
+      security = user
+      passdb backend = tdbsam
     create: yes
 
 - name: Configure Samba share for /nfs_share
@@ -69,7 +65,7 @@
     state: present
     create_home: no
     shell: /bin/bash
-      
+
 - name: Restart Samba to apply changes
   systemd:
     name: smbd
