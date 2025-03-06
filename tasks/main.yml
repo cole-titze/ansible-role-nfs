@@ -37,21 +37,38 @@
     state: started
     enabled: yes
 
+- name: Configure Samba to use system password
+  lineinfile:
+    path: /etc/samba/smb.conf
+    regexp: '^#?security ='
+    line: 'security = user'
+    create: yes
+  notify:
+    - Restart Samba
+
+- name: Configure Samba passdb backend
+  lineinfile:
+    path: /etc/samba/smb.conf
+    regexp: '^#?passdb backend ='
+    line: 'passdb backend = tdbsam'
+    create: yes
+  notify:
+    - Restart Samba
+
 - name: Configure Samba share for /nfs_share
   blockinfile:
     path: /etc/samba/smb.conf
     block: |
-      [global]
-      password_database = system
-
       [rpi_nfs_share]
       path = /rpi_nfs_share
       available = yes
       valid users = pi
       read only = no
       browseable = yes
-      public = yes
       writable = yes
+
+- name: Ensure pi user is added to Samba database
+  command: pdbedit -a -u pi
       
 - name: Restart Samba to apply changes
   systemd:
