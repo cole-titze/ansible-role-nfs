@@ -41,10 +41,21 @@
   blockinfile:
     path: /etc/samba/smb.conf
     marker: "# {mark} ANSIBLE MANAGED BLOCK - GLOBAL"
-    insertafter: "\[global\]"
+    insertafter: "[global]"
     block: |
       security = user
       passdb backend = tdbsam
+    create: yes
+
+- name: Ensure [global] section exists
+  blockinfile:
+    path: /etc/samba/smb.conf
+    marker: "# {mark} ANSIBLE MANAGED BLOCK - GLOBAL"
+    block: |
+      [global]
+      security = user
+      passdb backend = tdbsam
+    insertafter: EOF
     create: yes
 
 - name: Configure Samba share for /nfs_share
