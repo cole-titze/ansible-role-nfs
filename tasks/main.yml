@@ -43,8 +43,6 @@
     regexp: '^#?security ='
     line: 'security = user'
     create: yes
-  notify:
-    - Restart Samba
 
 - name: Configure Samba passdb backend
   lineinfile:
@@ -52,8 +50,6 @@
     regexp: '^#?passdb backend ='
     line: 'passdb backend = tdbsam'
     create: yes
-  notify:
-    - Restart Samba
 
 - name: Configure Samba share for /nfs_share
   blockinfile:
