@@ -37,27 +37,6 @@
     state: started
     enabled: yes
 
-- name: Ensure [global] section has necessary settings
-  blockinfile:
-    path: /etc/samba/smb.conf
-    marker: "# {mark} ANSIBLE MANAGED BLOCK - GLOBAL"
-    insertafter: "[global]"
-    block: |
-      security = user
-      passdb backend = tdbsam
-    create: yes
-
-- name: Ensure [global] section exists
-  blockinfile:
-    path: /etc/samba/smb.conf
-    marker: "# {mark} ANSIBLE MANAGED BLOCK - GLOBAL"
-    block: |
-      [global]
-      security = user
-      passdb backend = tdbsam
-    insertafter: EOF
-    create: yes
-
 - name: Configure Samba share for /nfs_share
   blockinfile:
     path: /etc/samba/smb.conf
@@ -70,12 +49,8 @@
       browseable = yes
       writable = yes
 
-- name: Ensure pi user exists in system
-  user:
-    name: pi
-    state: present
-    create_home: no
-    shell: /bin/bash
+- name: Ensure pi user is added to Samba database
+  command: smbpasswd -a -n {{ ansible_user }}
 
 - name: Restart Samba to apply changes
   systemd:
