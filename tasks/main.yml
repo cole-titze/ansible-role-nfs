@@ -42,9 +42,7 @@
     path: /etc/samba/smb.conf
     block: |
       [global]
-      security = user
-      map to guest = bad user
-      guest account = nobody  # This ensures that non-authenticated users are mapped to the 'nobody' account
+      password_database = system
 
       [rpi_nfs_share]
       path = /rpi_nfs_share
