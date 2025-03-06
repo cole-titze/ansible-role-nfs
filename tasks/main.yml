@@ -63,8 +63,12 @@
       browseable = yes
       writable = yes
 
-- name: Ensure pi user is added to Samba database
-  command: pdbedit -a -u pi
+- name: Ensure pi user exists in system
+  user:
+    name: pi
+    state: present
+    create_home: no
+    shell: /bin/bash
       
 - name: Restart Samba to apply changes
   systemd:
