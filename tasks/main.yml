@@ -25,6 +25,7 @@
     enabled: yes
 
 # Setup samba
+# TODO: This doesn't work
 - name: Install Samba
   apt:
     name:
@@ -36,6 +37,37 @@
     name: smbd
     state: started
     enabled: yes
+
+- name: Ensure [global] section exists
+  lineinfile:
+    path: /etc/samba/smb.conf
+    line: "[global]"
+    state: present
+  notify: Restart Samba
+
+- name: Ensure security = user is set in [global]
+  lineinfile:
+    path: /etc/samba/smb.conf
+    insertafter: '^\[global\]'
+    line: "  security = user"
+    state: present
+
+- name: Ensure passdb backend is set in [global]
+  lineinfile:
+    path: /etc/samba/smb.conf
+    insertafter: '^\[global\]'
+    line: "  passdb backend = tdbsam"
+    state: present
+
+- name: Ensure [global] section exists
+  blockinfile:
+    path: /etc/samba/smb.conf
+    block: |
+      [global]
+      security = user
+      passdb backend = tdbsam
+    insertafter: EOF
+    create: yes
 
 - name: Configure Samba share for /nfs_share
   blockinfile:
